@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
+use App\Helpers\RedirectResponse;
 use App\Views\View;
 
 class PageController
@@ -14,16 +14,28 @@ class PageController
 
     public function registerPage()
     {
+        session_start();
+        if ($_SESSION) {
+            RedirectResponse::redirect('/users');
+        }
         View::show('register');
     }
 
     public function loginPage()
     {
+        session_start();
+        if ($_SESSION) {
+            RedirectResponse::redirect('/users');
+        }
         View::show('login');
     }
 
     public function usersPage()
     {
+        session_start();
+        if (!$_SESSION) {
+            RedirectResponse::redirect('/');
+        }
         View::show('users');
     }
 }

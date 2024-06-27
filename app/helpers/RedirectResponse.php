@@ -7,5 +7,6 @@ class RedirectResponse
     public static function redirect(string $to)
     {
         header("Location: $to");
+        exit;
     }
 }

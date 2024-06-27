@@ -5,8 +5,7 @@
             <div class="container-fluid my-2 d-flex justify-content-end align-items-center">
                 <p class="m-0">
                     <?php
-                    session_start();
-                    echo $_SESSION['name'];
+                        echo $_SESSION['name'];
                     ?>
                 </p>
                 <button type="submit" class="btn btn-sm btn-secondary mx-2" >Logout</button>

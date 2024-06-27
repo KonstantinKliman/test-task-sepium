@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
-class User extends Model
+class User
 {
-    private string $tableName = 'users';
+    private string $id;
     private string $name;
     private string $email;
     private string $password;
-    private mixed $createdAt;
+    private string $createdAt;
+
+    public function __construct(string $id = '', string $name, string $email = '', string $password)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->createdAt = date('Y-m-d H:i:s');
+    }
 
     public function getName(): string
     {
@@ -45,80 +54,18 @@ class User extends Model
         return $this->createdAt;
     }
 
-    public function setCreatedAt(mixed $createdAt): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = date('Y-m-d H:i:s');
     }
 
-    public function save()
+    public function getId(): string
     {
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => $this->password,
-            'created_at' => $this->createdAt
-        ];
-
-        return $this->create($this->tableName, $data);
+        return $this->id;
     }
 
-    public function findById($id, array $columns = [])
+    public function setId(string $id): void
     {
-        if (empty($columns)) {
-            $tableColumn = '*';
-        } else {
-            $tableColumn = implode(',', $columns);
-        }
-        $query = "SELECT $tableColumn FROM {$this->tableName} WHERE id = :id";
-        $params = ['id' => $id];
-
-        return $this->read($query, $params);
-    }
-
-    public function findByName(string $name)
-    {
-
-        $query = "SELECT * FROM {$this->tableName} WHERE name = :name";
-        $params = ['name' => $name];
-
-        return $this->read($query, $params)[0];
-    }
-
-    public function updateRecord($id)
-    {
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => $this->password,
-            'created_at' => $this->createdAt
-        ];
-
-        $where = "id = :id";
-        $data['id'] = $id;
-
-        return $this->update($this->tableName, $data, $where);
-    }
-
-    public function deleteRecord($id)
-    {
-        $where = "id = :id";
-        $params = ['id' => $id];
-
-        return $this->delete($this->tableName, $where, $params);
-    }
-
-    public function findByColumns(array $columns)
-    {
-        $params = implode(',', $columns);
-        $query = "SELECT $params FROM {$this->tableName}";
-        return $this->read($query);
-    }
-
-    public function findByEmail(string $email)
-    {
-        $query = "SELECT * FROM {$this->tableName} WHERE email = :email";
-        $params = ['email' => $email];
-
-        return $this->read($query, $params);
+        $this->id = $id;
     }
 }

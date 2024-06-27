@@ -2,6 +2,7 @@
 
 namespace App\Database;
 
+use App\Views\View;
 use PDO;
 use PDOException;
 
@@ -26,8 +27,7 @@ class Database
             $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $this->PDO;
         } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-            return null;
+            View::error($e);
         }
     }
 

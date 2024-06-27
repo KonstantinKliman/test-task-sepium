@@ -2,6 +2,8 @@
 
 namespace App\Router;
 
+use App\Views\View;
+
 class Router
 {
     private $routes = [];
@@ -42,13 +44,13 @@ class Router
                 if (method_exists($controller, $actionName)) {
                     $controller->$actionName();
                 } else {
-                    throw new \Exception("Action $actionName not found in controller $controllerName");
+                    View::error(new \Exception("Action $actionName not found in controller $controllerName", 404));
                 }
             } else {
-                throw new \Exception("Controller $controllerName not found");
+                View::error(new \Exception("Controller $controllerName not found", 404));
             }
         } else {
-            throw new \Exception("No route found for URL " . implode('/', $this->url));
+            View::error(new \Exception("No route found for URL " . implode('/', $this->url), 404));
         }
     }
 }

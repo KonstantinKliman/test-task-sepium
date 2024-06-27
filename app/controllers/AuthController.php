@@ -5,61 +5,62 @@ namespace App\Controllers;
 use App\Helpers\JsonResponse;
 use App\Helpers\RedirectResponse;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Views\View;
 
 class AuthController
 {
+    private UserRepository $repository;
+
+    public function __construct()
+    {
+        $this->repository = new UserRepository();
+    }
+
     public function register()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'name' => $_POST['name'],
-                'email' => $_POST['email'],
-                'password' => $_POST['password']
-            ];
+        $data = [
+            'name' => $_POST['name'],
+            'email' => $_POST['email'],
+            'password' => $_POST['password']
+        ];
 
-            $user = new User();
+        $userModel = new User('', $data['name'], $data['email'], $data['password']);
 
-            $existingUser = $user->findByEmail($data['email']);
-            if ($existingUser) {
-                throw new \Exception('User with this email already exists', 400);
-            }
-
-            $user->setName($data['name']);
-            $user->setEmail($data['email']);
-            $user->setPassword($data['password']);
-            $user->setCreatedAt(date('Y-m-d H:i:s'));
-            $user->save();
-            RedirectResponse::redirect('/login');
+        $existingUser = $this->repository->getByEmail($userModel->getEmail());
+        if ($existingUser) {
+            View::error(new \Exception('User with this email already exists', 400));
         }
+
+        $this->repository->createUser($userModel);
+
+        RedirectResponse::redirect('/login');
     }
 
     public function login()
     {
         session_start();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'name' => $_POST['name'],
-                'password' => $_POST['password']
-            ];
+        $data = [
+            'name' => $_POST['name'],
+            'password' => $_POST['password']
+        ];
 
-            $user = new User();
-            $userData = $user->findByName($data['name']);
+        $userModel = new User('', $data['name'], '', $data['password']);
+        $user = $this->repository->getByName($userModel->getName());
 
-            if ($userData && password_verify($data['password'], $userData['password'])) {
-                $_SESSION['id'] = $userData['id'];
-                $_SESSION['name'] = $userData['name'];
-                if ($userData['name'] === 'admin' && password_verify('admin', $userData['password'])) {
-                    $_SESSION['role'] = 'admin';
-                } else {
-                    $_SESSION['role'] = 'user';
-                }
-                RedirectResponse::redirect('/users');
-                exit;
+        if ($user && password_verify($data['password'], $user['password'])) {
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['name'] = $user['name'];
+            if ($user['name'] === 'admin' && password_verify('admin', $user['password'])) {
+                $_SESSION['role'] = 'admin';
             } else {
-                throw new \Exception('Invalid credentials', 403);
+                $_SESSION['role'] = 'user';
             }
+            RedirectResponse::redirect('/users');
+            exit;
+        } else {
+            View::error(new \Exception('Invalid credentials', 403));
         }
     }
 
@@ -75,6 +76,9 @@ class AuthController
     public function getCurrentUser()
     {
         session_start();
+        if (!$_SESSION) {
+            RedirectResponse::redirect('/');
+        }
         JsonResponse::send(
             [
                 'id' => $_SESSION['id'],
