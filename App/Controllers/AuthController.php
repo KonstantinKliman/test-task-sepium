@@ -31,8 +31,8 @@ class AuthController
         $userModel->setEmail($data['email']);
 
         $existingUser = $this->repository->getByEmail($userModel->getEmail());
-        if ($existingUser) {
-            View::error(new \Exception('User with this email already exists', 400));
+        if ($existingUser && $existingUser['name'] === $userModel->getName()) {
+            View::error(new \Exception('User already exists', 400));
         }
 
         $this->repository->createUser($userModel);
