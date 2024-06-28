@@ -1,7 +1,7 @@
 $(document).ready(function () {
     function fetchAllUsers(currentUser) {
         $.ajax({
-            url: 'users/get-all',
+            url: 'http://localhost:8888/users/get-all',
             method: 'GET',
             success: function (response) {
                 var usersContainer = $('.users');
@@ -53,18 +53,56 @@ $(document).ready(function () {
     }
 
 
-    $('.create-user').submit(function (event) {
+    $('.create-user-form').submit(function (event) {
         event.preventDefault();
         var data = $('.create-user')[0];
         var formData = new FormData(data);
         $.ajax({
-            url: '/users',
+            url: 'http://localhost:8888/users',
             method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function (response) {
                 var user = response;
+                if (user.id === 2) {
+                    var usersContainer = $('.users');
+                    usersContainer.append($("<tr>", {
+                        id: "userId" + user.id
+                    })
+                        .append($("<th>", {
+                            "scope": "row",
+                            text: user.id
+                        }))
+                        .append($("<td>", {
+                                text: user.name
+                            }
+                        ))
+                        .append($("<td>", {
+                                text: user.email
+                            }
+                        ))
+                        .append($("<td>").append(currentUser.role === 'admin' ? $("<button>", {
+                                class: 'btn btn-sm btn-danger',
+                                text: 'Delete',
+                                click: function () {
+                                    $.ajax({
+                                        url: '/users/delete',
+                                        method: 'POST',
+                                        data: {
+                                            id: user.id
+                                        },
+                                        success: function () {
+                                            $("#userId" + user.id).remove();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                        }
+                                    })
+                                }
+                            }) : '')
+                        ))
+                }
                 var lastUserId = --user.id;
                 var lastUserRow = $("#userId" + lastUserId);
                 lastUserRow.after($("<tr>", {
@@ -83,18 +121,20 @@ $(document).ready(function () {
                         }
                     ))
                     .append($("<td>")
-                        .html("<button class=\"btn btn-sm btn-danger mx-1\">Delete</button>")))
+                        .html("<button class=\"btn btn-sm btn-danger\">Delete</button>")))
             },
-            error: function (error) {
-                console.error(error);
-            }
+            error:
+
+                function (error) {
+                    console.error(error);
+                }
         })
     })
 
     function getCurrentUser() {
         // проверяем роль пользователя
         $.ajax({
-            url: 'auth/current-user',
+            url: 'http://localhost:8888/auth/current-user',
             method: 'GET',
             success: function (response) {
                 var user = response;
@@ -116,7 +156,7 @@ $(document).ready(function () {
                         "<label for=\"password\" class=\"form-label\">Password</label>\n" +
                         "<input type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"Password\" name=\"password\">\n" +
                         "</div>\n" +
-                        "<button type=\"submit\" class=\"btn btn-success w-100\">Create</button>\n" +
+                        "<button type=\"submit\" class=\"btn btn-success w-100 create-user-btn\">Create</button>\n" +
                         "</form>\n" +
                         "</div>")
                 }
@@ -131,4 +171,5 @@ $(document).ready(function () {
 
     getCurrentUser();
 
-});
+})
+;

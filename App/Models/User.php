@@ -10,13 +10,9 @@ class User
     private string $password;
     private string $createdAt;
 
-    public function __construct(string $id = '', string $name, string $email = '', string $password)
+    public function __construct()
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
-        $this->createdAt = date('Y-m-d H:i:s');
+        $this->setCreatedAt();
     }
 
     public function getName(): string
@@ -41,12 +37,12 @@ class User
 
     public function getPassword(): string
     {
-        return password_verify($this->password, PASSWORD_BCRYPT);
+        return $this->password;
     }
 
     public function setPassword(string $password): void
     {
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->password = $password;
     }
 
     public function getCreatedAt(): mixed

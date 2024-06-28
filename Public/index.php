@@ -3,7 +3,7 @@
 use App\Router\Router;
 
 spl_autoload_register(function($class) {
-    $root = $_SERVER['DOCUMENT_ROOT'];
+    $root = $_SERVER['DOCUMENT_ROOT'] . '/../';
     $ds = DIRECTORY_SEPARATOR;
     $class = str_replace('\\', $ds, $class);
     $filename = $root . $ds . $class . '.php';

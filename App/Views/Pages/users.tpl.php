@@ -1,4 +1,4 @@
-<?php require_once 'includes/header.tpl.php' ?>
+<?php require_once 'Includes/header.tpl.php' ?>
     <body>
     <header>
         <form action="auth/logout" method="POST">
@@ -28,7 +28,7 @@
             </table>
         </div>
     </div>
-    <script src="/public/js/libs/jquery-3.7.1.js" type="text/javascript"></script>
-    <script src="/public/js/script.js" type="text/javascript"></script>
+    <script src="/js/libs/jquery-3.7.1.js" type="text/javascript"></script>
+    <script src="/js/script.js" type="text/javascript"></script>
     </body>
-<?php require_once 'includes/footer.tpl.php' ?>
+<?php require_once 'Includes/footer.tpl.php' ?>

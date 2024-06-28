@@ -8,11 +8,11 @@ use PDOException;
 
 class Database
 {
-    private $host = '127.0.0.1';
+    private $host = 'db';
     private $port = '3306';
     private $database = 'test_app';
     private $user = 'root';
-    private $password = '';
+    private $password = 'root_password';
     private PDO $PDO;
 
     public function __construct()

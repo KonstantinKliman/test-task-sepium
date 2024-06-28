@@ -25,7 +25,10 @@ class AuthController
             'password' => $_POST['password']
         ];
 
-        $userModel = new User('', $data['name'], $data['email'], $data['password']);
+        $userModel = new User();
+        $userModel->setName($data['name']);
+        $userModel->setPassword(password_hash($data['password'], PASSWORD_DEFAULT));
+        $userModel->setEmail($data['email']);
 
         $existingUser = $this->repository->getByEmail($userModel->getEmail());
         if ($existingUser) {
@@ -46,8 +49,12 @@ class AuthController
             'password' => $_POST['password']
         ];
 
-        $userModel = new User('', $data['name'], '', $data['password']);
+        $userModel = new User($data['name'], $data['password']);
+        $userModel->setName($data['name']);
+        $userModel->setPassword($data['password']);
+
         $user = $this->repository->getByName($userModel->getName());
+
 
         if ($user && password_verify($data['password'], $user['password'])) {
             $_SESSION['id'] = $user['id'];

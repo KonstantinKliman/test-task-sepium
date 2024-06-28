@@ -17,13 +17,7 @@ class UserController
 
     public function getAllUsers()
     {
-        $users = array_map(function ($user) {
-            return [
-                'id' => $user->getId(),
-                'name' => $user->getName(),
-                'email' => $user->getEmail()
-            ];
-        }, $this->repository->getAllUsers());
+        $users = $this->repository->getAllUsers() ;
 
         if ($users) {
             JsonResponse::send($users);
@@ -40,7 +34,10 @@ class UserController
             'password' => $_POST['password']
         ];
 
-        $userModel = new User(name: $data['name'], email: $data['email'], password: $data['password']);
+        $userModel = new User();
+        $userModel->setName($data['name']);
+        $userModel->setPassword(password_hash($data['password'], PASSWORD_DEFAULT));
+        $userModel->setEmail($data['email']);
 
         $existingUser = $this->repository->getByEmail($userModel->getEmail());
         if ($existingUser) {
@@ -48,13 +45,7 @@ class UserController
             return;
         }
 
-        $user = array_map(function ($user) {
-            return [
-                'id' => $user->getId(),
-                'name' => $user->getName(),
-                'email' => $user->getEmail()
-            ];
-        }, $this->repository->createUser($userModel));
+        $user = $this->repository->createUser($userModel);
         if ($user) {
             JsonResponse::send($user);
         } else {
@@ -67,7 +58,8 @@ class UserController
         session_start();
         $deletedUserId = $_POST['id'];
         if ($deletedUserId && $_SESSION['role'] === 'admin') {
-            $user = new User($deletedUserId, '', '', '');
+            $user = new User();
+            $user->setId($deletedUserId);
             $this->repository->deleteUser($user->getId());
             JsonResponse::send(['message' => 'User successfully deleted.']);
         } else {

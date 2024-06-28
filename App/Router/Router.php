@@ -19,7 +19,7 @@ class Router
 
     private function loadRoutes()
     {
-        $this->routes = require $_SERVER['DOCUMENT_ROOT'] . '/app/router/routes.php';
+        $this->routes = require $_SERVER['DOCUMENT_ROOT'] . '/../App/Router/routes.php';
     }
 
     private function getRoute()
@@ -34,6 +34,9 @@ class Router
 
     public function dispatch()
     {
+//        echo '<pre>';
+//        var_dump($this->method);
+//        echo '</pre>';
         $route = $this->getRoute();
         if ($route) {
             $controllerName = '\\App\\Controllers\\' . $route[2][0];

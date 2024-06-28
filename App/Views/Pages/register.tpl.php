@@ -1,4 +1,4 @@
-<?php require_once 'includes/header.tpl.php' ?>
+<?php require_once 'Includes/header.tpl.php' ?>
 <body>
     <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
         <div class="border p-4 rounded w-25">
@@ -20,4 +20,4 @@
             </form>
         </div>
     </div>
-<?php require_once 'includes/footer.tpl.php' ?>
+<?php require_once 'Includes/footer.tpl.php' ?>

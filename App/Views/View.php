@@ -6,14 +6,14 @@ class View
 {
     public static function show(string $page)
     {
-        require_once 'pages/' . $page . '.tpl.php';
+        require_once 'Pages/' . $page . '.tpl.php';
         exit;
     }
 
     public static function error(\Exception $exception)
     {
         http_response_code($exception->getCode());
-        require_once 'pages/error.tpl.php';
+        require_once 'Pages/error.tpl.php';
         exit;
     }
 }

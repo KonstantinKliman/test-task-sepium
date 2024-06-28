@@ -1,4 +1,4 @@
-<?php require_once 'includes/header.tpl.php' ?>
+<?php require_once 'Includes/header.tpl.php' ?>
     <body>
     <div class="container-fluid vh-100 p-5">
         <div class="row mb-2">
@@ -26,4 +26,4 @@
         </div>
     </div>
     </body>
-<?php require_once 'includes/footer.tpl.php' ?>
+<?php require_once 'Includes/footer.tpl.php' ?>

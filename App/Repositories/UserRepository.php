@@ -21,10 +21,7 @@ class UserRepository
         $sql = "SELECT * FROM users";
         $stmt = $this->PDO->prepare($sql);
         $stmt->execute();
-        $users = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $users[] = new User($row['id'], $row['name'], $row['email'], $row['password']);
-        }
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $users;
     }
 
@@ -39,7 +36,8 @@ class UserRepository
                 'password' => $user->getPassword(),
                 'created_at' => $user->getCreatedAt()
             ]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $this->getByName($user->getName());
+
             return $user;
         } catch (\PDOException $e) {
             View::error($e);
